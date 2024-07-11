@@ -1,0 +1,42 @@
+﻿@page "/dbtest"
+@* HttpClient を受け取る *@
+@inject HttpClient HttpClient
+
+<PageTitle>DB Test</PageTitle>
+
+<h1>Hi!</h1>
+
+@if (dbdatas == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dbdata in dbdatas) {
+                <tr>
+                    <td>@dbdata.DataID</td>
+                    <td>@dbdata.DataName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private DBData[]? dbdatas;
+
+    protected override async Task OnInitializedAsync() {
+        // API を呼び出してデータを取得
+        dbdatas = await HttpClient.GetFromJsonAsync<DBData[]>("api/DBData");
+    }
+
+    private class DBData {
+        public int? DataID { get; set; }
+        public string? DataName { get; set; }
+    }
+}
